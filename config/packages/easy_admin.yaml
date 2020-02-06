@@ -1,0 +1,9 @@
+easy_admin:
+    site_name: "Back office BileMo"
+    entities:
+        # List the entity class name you want to manage
+        - App\Entity\Mobile
+        - App\Entity\Partner
+        - App\Entity\Client
+    user:
+        name_property_path: "email"
