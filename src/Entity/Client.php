@@ -21,7 +21,9 @@ use Doctrine\ORM\Mapping as ORM;
  *                 "groups"={"client:read"}
  *             }
  *         },
- *         "post"
+ *         "post" = {
+ *              "security" = "is_granted('ROLE_PARTNER')"
+ *          }
  *      },
  *     itemOperations= {
  *         "get" = {
