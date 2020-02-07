@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -11,6 +13,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(
  *     fields={"brand", "model"},
  *     message="Ce mobile est déjà enregistré dans notre base de données."
+ * )
+ * @ApiResource(
+ *     itemOperations={
+ *         "get"
+ *     },
+ *     collectionOperations={
+ *         "get" = {
+ *             "normalization_context" = {
+ *                 "groups"={"mobiles:read"}
+ *              }
+ *         }
+ *     }
  * )
  */
 class Mobile
@@ -33,12 +47,14 @@ class Mobile
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Choice(callback="getBrands")
+     * @Groups({"mobiles:read"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"mobiles:read"})
      */
     private $model;
 
@@ -78,6 +94,7 @@ class Mobile
      * @Assert\NotBlank(
      *     message="Merci de renseigner le prix."
      * )
+     * @Groups({"mobiles:read"})
      */
     private $price;
 
