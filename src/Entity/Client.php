@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +13,24 @@ use Doctrine\ORM\Mapping as ORM;
  * @UniqueEntity(
  *     fields={"firstName", "lastName", "birthday"},
  *     message="Ce client est déjà enregistré dans notre base de données."
+ * )
+ * @ApiResource(
+ *     collectionOperations= {
+ *         "get" = {
+ *             "normalization_context"= {
+ *                 "groups"={"client:read"}
+ *             }
+ *         },
+ *         "post"
+ *      },
+ *     itemOperations= {
+ *         "get" = {
+ *             "normalization_context"= {
+ *                 "groups"={"clients:read"}
+ *             }
+ *         },
+ *         "delete"
+ *     }
  * )
  */
 class Client
@@ -30,6 +50,7 @@ class Client
      *     max = 35,
      *     minMessage = "Maximum de {{ limit }} caractères pour le prénom."
      * )
+     * @Groups({"client:read", "clients:read"})
      */
     private $firstName;
 
@@ -41,18 +62,21 @@ class Client
      *     max = 40,
      *     minMessage = "Maximum de {{ limit }} caractères pour le nom."
      * )
+     * @Groups({"client:read", "clients:read"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\Date()
+     * @Groups({"client:read", "clients:read"})
      */
     private $birthday;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"client:read"})
      */
     private $address;
 
@@ -62,6 +86,7 @@ class Client
      *     pattern="#^[0-9]{5}$#",
      *     message="Merci d'entrer un code postal valide."
      * )
+     * @Groups({"client:read"})
      */
     private $postalCode;
 
@@ -74,6 +99,7 @@ class Client
     /**
      * @ORM\Column(type="datetime")
      * @Assert\DateTime
+     * @Groups({"client:read"})
      */
     private $createdAt;
 
