@@ -28,8 +28,10 @@ use Doctrine\ORM\Mapping as ORM;
  *     itemOperations= {
  *         "get" = {
  *             "normalization_context"= {
- *                 "groups"={"clients:read"}
- *             }
+ *                 "groups"={"client:read"}
+ *             },
+ *                 "security"= "object.getPartner() === user",
+ *                 "security_message" = "Vous n'êtes pas autorisé a accéder aux informations de ce client.",
  *         },
  *         "delete"
  *     }
@@ -95,6 +97,7 @@ class Client
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partner", inversedBy="clients")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"client:read"})
      */
     private $partner;
 
@@ -190,5 +193,17 @@ class Client
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return "Clients";
     }
 }

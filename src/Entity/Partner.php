@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     fields={"name"},
  *     message="Cette entreprise est déjà enregistrée dans notre base de données."
  * )
+ * @ApiResource()
  */
 class Partner implements UserInterface
 {
@@ -27,6 +30,7 @@ class Partner implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"client:read"})
      */
     private $id;
 
@@ -62,7 +66,7 @@ class Partner implements UserInterface
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\DateTime
+     * @Assert\Type(type="\DateTime")
      */
     private $createdAt;
 
@@ -111,8 +115,6 @@ class Partner implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -171,6 +173,13 @@ class Partner implements UserInterface
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     /**
