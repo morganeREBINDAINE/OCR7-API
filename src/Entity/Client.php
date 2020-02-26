@@ -86,6 +86,7 @@ class Client
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="#^[0-9]{5}$#",
      *     message="Merci d'entrer un code postal valide."
