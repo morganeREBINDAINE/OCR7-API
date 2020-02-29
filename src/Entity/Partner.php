@@ -212,4 +212,9 @@ class Partner implements UserInterface
 
         return $this;
     }
+
+    public function  isActivated(): bool
+    {
+        return $this->getPassword() !== null;
+    }
 }

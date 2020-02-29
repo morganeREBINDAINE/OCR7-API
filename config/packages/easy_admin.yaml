@@ -1,9 +1,39 @@
 easy_admin:
     site_name: "Back office BileMo"
     entities:
-        # List the entity class name you want to manage
-        - App\Entity\Mobile
-        - App\Entity\Partner
-        - App\Entity\Client
+        Mobile:
+            class: App\Entity\Mobile
+            form:
+                fields:
+                    - property: 'brand'
+                      type: 'choice'
+                      type_options:
+                          choices:
+                              'SAMGUNG': 'SAMGUNG'
+                              'IZONE': 'IZONE'
+                              'MG': 'MG'
+                              'WUAHEY': 'WUAHEY'
+                    - {property: 'model'}
+                    - {property: 'size', type_options: {help: 'format *height*x*width*'}}
+                    - property: 'OS'
+                      type: 'choice'
+                      type_options:
+                          choices:
+                              'ANDROID': 'ANDROID'
+                              'IOS': 'IOS'
+                    - {property: 'battery', type_options: {help: 'in mAh'}}
+                    - {property: 'memory', type_options: {help: 'in Go'}}
+                    - {property: 'price'}
+        Partner:
+            class: App\Entity\Partner
+            list:
+                fields: ['id', 'name', 'email', {property: 'activated', type: 'boolean'}, 'clients', 'createdAt']
+            form:
+                fields: ['name', 'email']
     user:
         name_property_path: "email"
+        display_avatar: false
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
