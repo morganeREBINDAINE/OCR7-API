@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ClientRepository")
  * @UniqueEntity(
- *     fields={"firstName", "lastName", "birthday"},
+ *     fields={"firstName", "lastName", "birthday", "partner"},
  *     message="Ce client est déjà enregistré dans notre base de données."
  * )
  * @ApiResource(
@@ -33,6 +33,12 @@ use Doctrine\ORM\Mapping as ORM;
  *                 "security"= "object.getPartner() === user",
  *                 "security_message" = "Vous n'êtes pas autorisé a accéder aux informations de ce client.",
  *         },
+ *         "put" = {
+ *             "normalization_context"= {
+ *                 "groups"={"client:write"}
+ *             },
+ *                 "security"= "object.getPartner() === user"
+ *         },
  *         "delete"
  *     }
  * )
@@ -48,62 +54,66 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      * @Assert\Length(
      *     min = 2,
      *     minMessage = "Minimum de {{ limit }} caractères pour le prénom.",
      *     max = 35,
      *     minMessage = "Maximum de {{ limit }} caractères pour le prénom."
      * )
-     * @Groups({"client:read", "clients:read"})
+     * @Groups({"client:read", "clients:read", "client:write"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      * @Assert\Length(
      *     min = 2,
      *     minMessage = "Minimum de {{ limit }} caractères pour le nom.",
      *     max = 40,
      *     minMessage = "Maximum de {{ limit }} caractères pour le nom."
      * )
-     * @Groups({"client:read", "clients:read"})
+     * @Groups({"client:read", "clients:read", "client:write"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\Date()
-     * @Groups({"client:read", "clients:read"})
+     * @Groups({"client:read", "clients:read", "client:write"})
      */
     private $birthday;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"client:read"})
+     * @Groups({"client:read", "client:write"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern="#^[0-9]{5}$#",
      *     message="Merci d'entrer un code postal valide."
      * )
-     * @Groups({"client:read"})
+     * @Groups({"client:read", "client:write"})
      */
     private $postalCode;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partner", inversedBy="clients")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      * @Groups({"client:read"})
      */
     private $partner;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotNull()
      * @Assert\DateTime
      * @Groups({"client:read"})
      */
