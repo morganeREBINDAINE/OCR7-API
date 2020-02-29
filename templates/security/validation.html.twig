@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation du compte{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto text-center">
+        <a href="{{ path('home') }}"><img src="{{ asset('images/phone.jpg') }}" alt="BileMo" style="max-height:400px;"></a>
+        <h1>Bienvenue chez BileMo !</h1>
+        <p>Pour pouvoir vous connecter, veuillez finaliser votre compte en rectifiant si besoin le nom de votre entreprise, et en entrant votre mot de passe.</p>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.password) }}
+        <button type="submit" class="btn btn-danger">Valider mes infos</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

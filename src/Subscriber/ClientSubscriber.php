@@ -3,25 +3,29 @@
 namespace App\Subscriber;
 
 use App\Entity\Client;
+use App\Entity\Partner;
+use App\Services\Mailer;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 class ClientSubscriber implements EventSubscriber
 {
-
+    private $security;
     /**
-     * @var SessionInterface
+     * @var UserPasswordEncoderInterface
      */
-    private $storage;
+    private $encoder;
+    /** @var Mailer */
+    private $mailer;
 
-    public function __construct($storage)
+    public function __construct(Security $security, UserPasswordEncoderInterface $encoder, Mailer $mailer)
     {
-        $this->storage = $storage;
+        $this->security = $security;
+        $this->encoder  = $encoder;
+        $this->mailer   = $mailer;
     }
 
     /**
@@ -38,10 +42,14 @@ class ClientSubscriber implements EventSubscriber
 
     public function prePersist(LifecycleEventArgs $args)
     {
-        $client = $args->getObject();
+        $object = $args->getObject();
 
-        if($client instanceof Client) {
-            $client->setPartner($this->storage->getToken()->getUser());
+        if($object instanceof Client) {
+            $object->setPartner($this->security->getUser());
+        }
+
+        if($object instanceof Partner) {
+            $this->mailer->sendSubscriptionMail($object);
         }
     }
 }

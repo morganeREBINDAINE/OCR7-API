@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,7 +49,7 @@ class Partner implements UserInterface
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
@@ -75,10 +75,19 @@ class Partner implements UserInterface
      */
     private $clients;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Token", mappedBy="partner", orphanRemoval=true, cascade={"persist", "remove"})
+     */
+    private $tokens;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
-        $this->createdAt = new DateTimeImmutable();
+        $this->tokens = new ArrayCollection();
+        $this->createdAt = new DateTime();
+
+        $token = new Token($this, TOKEN::TYPE_SUBSCRIPTION);
+        $this->addToken($token);
         $this->setRoles(['ROLE_PARTNER']);
     }
 
@@ -211,6 +220,46 @@ class Partner implements UserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Token[]
+     */
+    public function getTokens(): Collection
+    {
+        return $this->tokens;
+    }
+
+    public function addToken(Token $token): self
+    {
+        if (!$this->tokens->contains($token)) {
+            $token->setPartner($this);
+            $this->tokens[] = $token;
+        }
+
+        return $this;
+    }
+
+    public function removeToken(Token $token): self
+    {
+        if ($this->tokens->contains($token)) {
+            $this->tokens->removeElement($token);
+            // set the owning side to null (unless already changed)
+            if ($token->getPartner() === $this) {
+                $token->setPartner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSubscriptionToken()
+    {
+        foreach ($this->getTokens() as $token) {
+            if ($token->getType() === 'subscription') {
+                return $token;
+            }
+        }
     }
 
     public function  isActivated(): bool
