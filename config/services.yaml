@@ -26,3 +26,9 @@ services:
     App\Subscriber\ClientSubscriber:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+
+    app.jwt_token_authenticator:
+        class: App\Security\JWTTokenAuthenticator
+        parent: lexik_jwt_authentication.security.guard.jwt_token_authenticator
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: false
