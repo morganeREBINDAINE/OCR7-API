@@ -28,6 +28,7 @@ security:
             stateless: true
             anonymous: true
             provider: api_user_provider
+            user_checker: App\Security\UserChecker
             json_login:
                 username_path: email
                 check_path: /api/login_check
