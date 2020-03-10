@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Token;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,7 +19,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/validation/{token}", name="validation")
      */
-    public function validate(Token $subscriptionToken, Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function validate(Token $subscriptionToken, Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $entityManager): Response
     {
         $partner = $subscriptionToken->getPartner();
         $form = $this->createFormBuilder($partner)
@@ -43,6 +44,7 @@ class SecurityController extends AbstractController
             $subscriptionToken->setAccessed(new \DateTime());
             $password = $encoder->encodePassword($partner, $partner->getPassword());
             $partner->setPassword($password);
+            $entityManager->flush();
             $this->addFlash('success', 'Votre compte est désormais actif.');
             return $this->redirectToRoute('home');
         }
