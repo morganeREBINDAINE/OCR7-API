@@ -128,10 +128,6 @@ class AppFixtures extends Fixture
             $manager->persist($mobileCreated);
         }
 
-        $partner = new Partner();
-        $partner->setEmail('test@test.fr')->setPassword($pass)->setName('Test de partner');
-        $manager->persist($partner);
-
         $manager->flush();
     }
 }
