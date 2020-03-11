@@ -2,6 +2,10 @@
 
 Ce projet contient le code d'une API REST Symfony 4, utilisant API Platform, dans le cadre du parcours de développeur Symfony d'OpenClassroom.
 
+URL du site: http://morgane-ocr.website
+
+URL du github: https://github.com/morganeREBINDAINE/OCR7-API
+
 ### Installation
 1. Clonez le repository sur votre local
 2. Déplacez-vous dans le dossier généré
@@ -11,6 +15,7 @@ Ce projet contient le code d'une API REST Symfony 4, utilisant API Platform, dan
 6. Lancez la commande symfony server:run
 
 ### Documentation
+La doc swagger est accessible à l'url http://morgane-ocr.website/api .
 ##### Connexion à l'API
 L'API utilise le JWT comme mode d'authentification. Une fois le compte partenaire ajouté, un utilisateur obtient son token via cette requête :
 POST /api/login_check:
