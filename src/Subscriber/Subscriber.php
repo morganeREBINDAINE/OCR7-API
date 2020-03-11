@@ -11,7 +11,7 @@ use Doctrine\ORM\Events;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 
-class ClientSubscriber implements EventSubscriber
+class Subscriber implements EventSubscriber
 {
     private $security;
     /**

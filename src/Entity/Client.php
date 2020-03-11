@@ -22,7 +22,10 @@ use Doctrine\ORM\Mapping as ORM;
  *             }
  *         },
  *         "post" = {
- *              "security" = "is_granted('ROLE_PARTNER')"
+ *              "security" = "is_granted('ROLE_PARTNER')",
+ *              "denormalization_context"= {
+ *                 "groups"={"client:write"}
+ *             },
  *          }
  *      },
  *     itemOperations= {
@@ -31,13 +34,13 @@ use Doctrine\ORM\Mapping as ORM;
  *                 "groups"={"client:read"}
  *             },
  *                 "security"= "object.getPartner() === user",
- *                 "security_message" = "Vous n'êtes pas autorisé a accéder aux informations de ce client.",
+ *                 "security_message" = "Forbidden",
  *         },
  *         "put" = {
  *             "normalization_context"= {
  *                 "groups"={"client:write"}
  *             },
- *                 "security"= "object.getPartner() === user"
+ *             "security"= "object.getPartner() === user"
  *         },
  *         "delete"
  *     }
@@ -106,8 +109,6 @@ class Client
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partner", inversedBy="clients")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
-     * @Groups({"client:read"})
      */
     private $partner;
 

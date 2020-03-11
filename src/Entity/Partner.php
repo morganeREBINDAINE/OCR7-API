@@ -264,6 +264,6 @@ class Partner implements UserInterface
 
     public function  isActivated(): bool
     {
-        return $this->getPassword() !== null;
+        return $this->getPassword() != null;
     }
 }
